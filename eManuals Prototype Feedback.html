@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>eManuals Prototype Feedback</title>
+<style>
+  :root {
+    --ink: #12202b;
+    --ink-soft: #4a5a66;
+    --line: #d7dee2;
+    --bg: #f6f8f9;
+    --panel: #ffffff;
+    --accent: #0a5c66;
+    --accent-soft: #e4f0f1;
+    --warn: #b23b3b;
+    --radius: 6px;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.5;
+  }
+  .wrap {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 32px 20px 80px;
+  }
+  header.page {
+    margin-bottom: 24px;
+  }
+  header.page h1 {
+    font-size: 22px;
+    margin: 0 0 6px;
+    letter-spacing: -0.01em;
+  }
+  header.page p {
+    margin: 0;
+    color: var(--ink-soft);
+    font-size: 14px;
+  }
+  .tabs {
+    display: flex;
+    gap: 4px;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 4px;
+    margin-bottom: 20px;
+  }
+  .tab-btn {
+    flex: 1;
+    border: none;
+    background: transparent;
+    padding: 10px 12px;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--ink-soft);
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  .tab-btn.active {
+    background: var(--accent);
+    color: #fff;
+  }
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 24px 22px;
+  }
+  .section-title {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--accent);
+    font-weight: 700;
+    margin: 28px 0 14px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--line);
+  }
+  .section-title:first-child { margin-top: 0; }
+  .field { margin-bottom: 18px; }
+  .field label.q {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .field .hint {
+    font-size: 12.5px;
+    color: var(--ink-soft);
+    margin-bottom: 8px;
+  }
+  input[type="text"], textarea, select {
+    width: 100%;
+    padding: 9px 10px;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    font-size: 14px;
+    font-family: inherit;
+    background: #fff;
+    color: var(--ink);
+  }
+  textarea { resize: vertical; min-height: 70px; }
+  .choice-group { display: flex; flex-direction: column; gap: 6px; }
+  .choice-group label {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 13.5px;
+    font-weight: 400;
+    cursor: pointer;
+  }
+  .choice-group input { margin-top: 3px; }
+  .other-inline {
+    margin-top: 6px;
+    max-width: 320px;
+  }
+  .scale-row {
+    display: flex;
+    gap: 8px;
+  }
+  .scale-row label {
+    flex: 1;
+    text-align: center;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 8px 0;
+    font-size: 13px;
+    cursor: pointer;
+  }
+  .scale-row input { display: none; }
+  .scale-row input:checked + span {
+    font-weight: 700;
+  }
+  .scale-row label:has(input:checked) {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+  }
+  .conditional {
+    margin-top: 10px;
+    padding-left: 14px;
+    border-left: 2px solid var(--line);
+    display: none;
+  }
+  .conditional.show { display: block; }
+  .footer-actions {
+    margin-top: 26px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  button.submit {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    padding: 11px 22px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  button.submit:disabled { opacity: 0.6; cursor: default; }
+  .status { font-size: 13px; color: var(--ink-soft); }
+  .status.ok { color: var(--accent); font-weight: 600; }
+  .status.err { color: var(--warn); font-weight: 600; }
+  .note {
+    background: var(--accent-soft);
+    border: 1px solid var(--line);
+    border-radius: 5px;
+    padding: 10px 12px;
+    font-size: 12.5px;
+    color: var(--ink-soft);
+    margin-bottom: 20px;
+  }
+  .placeholder-flag {
+    color: var(--warn);
+    font-weight: 700;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="page">
+    <h1>AI-Assisted Staging Form — Prototype Feedback</h1>
+    <p>Two short sections below: your overall experience with the prototype, and a per-case validation log so we can trace results back to source documents.</p>
+  </header>
+
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="overall" onclick="switchTab('overall')">Overall Experience</button>
+    <button class="tab-btn" data-tab="testcase" onclick="switchTab('testcase')">Test Case Log</button>
+  </div>
+
+  <!-- ============ OVERALL EXPERIENCE FORM ============ -->
+  <div class="panel tabpanel" id="panel-overall">
+    <div class="note">Fill this out once, after you've had a chance to work with the prototype in general (not tied to one specific case).</div>
+    <form id="form-overall">
+      <div class="field">
+        <label class="q">Your name</label>
+        <input type="text" name="testerName" required>
+      </div>
+
+      <div class="field">
+        <label class="q">Overall, how satisfied are you with the prototype so far?</label>
+        <div class="scale-row">
+          <label><input type="radio" name="satisfaction" value="1" required><span>1<br>Not satisfied</span></label>
+          <label><input type="radio" name="satisfaction" value="2"><span>2</span></label>
+          <label><input type="radio" name="satisfaction" value="3"><span>3</span></label>
+          <label><input type="radio" name="satisfaction" value="4"><span>4</span></label>
+          <label><input type="radio" name="satisfaction" value="5"><span>5<br>Very satisfied</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="q">Describe your overall experience using the prototype</label>
+        <textarea name="overallFeedback" required></textarea>
+      </div>
+
+      <div class="field">
+        <label class="q">What were the main pain points or frustrations?</label>
+        <textarea name="painPoints"></textarea>
+      </div>
+
+      <div class="field">
+        <label class="q">Any suggestions for improvement?</label>
+        <textarea name="suggestions"></textarea>
+      </div>
+
+      <div class="footer-actions">
+        <button type="submit" class="submit">Submit overall feedback</button>
+        <span class="status" id="status-overall"></span>
+      </div>
+    </form>
+  </div>
+
+  <!-- ============ TEST CASE LOG FORM ============ -->
+  <div class="panel tabpanel" id="panel-testcase" style="display:none;">
+    <div class="note">Complete this once <b>per test case</b>. If you test multiple cases, submit this form again for each one — that's what lets us trace an issue back to a specific case and source document.</div>
+    <form id="form-testcase">
+
+      <div class="section-title">Section 1 — Case Information</div>
+
+      <div class="field">
+        <label class="q">Test Case ID</label>
+        <div class="hint">Example: CASE-001</div>
+        <input type="text" name="testCaseId" required>
+      </div>
+
+      <div class="field">
+        <label class="q">Manual or Document Number</label>
+        <input type="text" name="docNumber">
+      </div>
+
+      <div class="field">
+        <label class="q">Reviewer name or initials</label>
+        <input type="text" name="reviewerName" required>
+      </div>
+
+      <div class="field">
+        <label class="q">Which source materials were used for this case? (select all that apply)</label>
+        <div class="choice-group">
+          <label><input type="checkbox" name="sourceMaterials" value="DCR"> DCR</label>
+          <label><input type="checkbox" name="sourceMaterials" value="TRF"> TRF</label>
+          <label><input type="checkbox" name="sourceMaterials" value="Windchill"> Windchill</label>
+          <label><input type="checkbox" name="sourceMaterials" value="Final completed staging form"> Final completed staging form</label>
+          <label>
+            <input type="checkbox" id="src-other-cb" onchange="toggleOther('src-other-cb','src-other-text')"> Other:
+            <input type="text" class="other-inline" id="src-other-text" disabled style="display:none;">
+          </label>
+        </div>
+      </div>
+
+      <div class="section-title">Section 2 — Overall Validation (for this case)</div>
+
+      <div class="field">
+        <label class="q">Was the generated staging form usable as a starting point?</label>
+        <div class="choice-group">
+          <label><input type="radio" name="usableAsStart" value="Yes, with no corrections" required> Yes, with no corrections</label>
+          <label><input type="radio" name="usableAsStart" value="Yes, with minor corrections"> Yes, with minor corrections</label>
+          <label><input type="radio" name="usableAsStart" value="Yes, but major corrections were needed"> Yes, but major corrections were needed</label>
+          <label><input type="radio" name="usableAsStart" value="No"> No</label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="q">Approximately how many fields required correction?</label>
+        <div class="choice-group">
+          <label><input type="radio" name="fieldsCorrectedCount" value="0" required> 0</label>
+          <label><input type="radio" name="fieldsCorrectedCount" value="1-2"> 1–2</label>
+          <label><input type="radio" name="fieldsCorrectedCount" value="3-5"> 3–5</label>
+          <label><input type="radio" name="fieldsCorrectedCount" value="More than 5"> More than 5</label>
+          <label><input type="radio" name="fieldsCorrectedCount" value="Unsure"> Unsure</label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="q">Approximately how long did it take to review and correct the generated form?</label>
+        <div class="choice-group">
+          <label><input type="radio" name="reviewTime" value="Less than 2 minutes" required> Less than 2 minutes</label>
+          <label><input type="radio" name="reviewTime" value="2-5 minutes"> 2–5 minutes</label>
+          <label><input type="radio" name="reviewTime" value="6-10 minutes"> 6–10 minutes</label>
+          <label><input type="radio" name="reviewTime" value="More than 10 minutes"> More than 10 minutes</label>
+        </div>
+      </div>
+
+      <div class="section-title">Section 3 — Issue Traceability</div>
+
+      <div class="field">
+        <label class="q">Which fields required correction or additional review? (select all that apply)</label>
+        <div class="hint"><span class="placeholder-flag">占位符：</span>下面是临时字段名，等你提供真实的 26 个 staging form 字段名后替换。</div>
+        <div class="choice-group" id="field-checkbox-list">
+          <!-- PLACEHOLDER FIELD LIST — replace FIELD_OPTIONS array below with real 26 field names -->
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="q">For the most important issue, please provide the following</label>
+        <div class="hint">Field name, generated value, correct value, source of correct value, brief explanation.<br>
+        Example: Revision | Generated: A | Correct: B | Source: Windchill | The prototype used an outdated revision.</div>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+          <input type="text" name="issueField" placeholder="Field name">
+          <input type="text" name="issueGenerated" placeholder="Generated value">
+          <input type="text" name="issueCorrect" placeholder="Correct value">
+          <input type="text" name="issueSource" placeholder="Source of correct value">
+        </div>
+        <textarea name="issueExplanation" placeholder="Brief explanation" style="margin-top:10px;"></textarea>
+      </div>
+
+      <div class="field">
+        <label class="q">Did the prototype miss any issue that should have triggered a validation warning?</label>
+        <div class="choice-group">
+          <label><input type="radio" name="missedWarning" value="No" onchange="toggleConditional('missedWarning','cond-missed-warning','No')" required> No</label>
+          <label><input type="radio" name="missedWarning" value="Yes" onchange="toggleConditional('missedWarning','cond-missed-warning','No')"> Yes</label>
+          <label><input type="radio" name="missedWarning" value="Unsure" onchange="toggleConditional('missedWarning','cond-missed-warning','No')"> Unsure</label>
+        </div>
+        <div class="conditional" id="cond-missed-warning">
+          <label class="q" style="font-weight:500; font-size:13px;">Briefly describe the missing warning</label>
+          <input type="text" name="missedWarningDesc">
+        </div>
+      </div>
+
+      <div class="section-title">Section 4 — Final Assessment</div>
+
+      <div class="field">
+        <label class="q">Overall result for this case</label>
+        <div class="choice-group">
+          <label><input type="radio" name="overallResult" value="Pass" required> Pass</label>
+          <label><input type="radio" name="overallResult" value="Pass with minor corrections"> Pass with minor corrections</label>
+          <label><input type="radio" name="overallResult" value="Pass with major corrections"> Pass with major corrections</label>
+          <label><input type="radio" name="overallResult" value="Fail"> Fail</label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="q">What is the one most important improvement needed? <span style="font-weight:400; color:var(--ink-soft);">(optional)</span></label>
+        <input type="text" name="mostImportantImprovement">
+      </div>
+
+      <div class="footer-actions">
+        <button type="submit" class="submit">Submit test case log</button>
+        <span class="status" id="status-testcase"></span>
+      </div>
+    </form>
+  </div>
+
+</div>
+
+<script>
+// ============================================================
+// 部署后，把下面这一行换成你自己的 Apps Script Web App URL
+// ============================================================
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyQSJZlx6UATpH4eXLWX3MluIxntvdrrm7ePemO34vUXWp39a-IP7mcemfqMLtofH1Z/exec';
+
+// PLACEHOLDER — 用真实的 26 个 staging form 字段名替换这里
+const FIELD_OPTIONS = [
+  'Revision',
+  'Effective Date',
+  'GTIN',
+  'Language',
+  'Document Title',
+  'Part Number'
+  // ... 补齐到 26 个真实字段名
+];
+
+function renderFieldCheckboxes() {
+  const container = document.getElementById('field-checkbox-list');
+  let html = '';
+  FIELD_OPTIONS.forEach(name => {
+    html += `<label><input type="checkbox" name="fieldsRequiringCorrection" value="${name}"> ${name}</label>`;
+  });
+  html += `<label><input type="checkbox" name="fieldsRequiringCorrection" value="No fields required correction"> No fields required correction</label>`;
+  html += `<label><input type="checkbox" id="fix-other-cb" onchange="toggleOther('fix-other-cb','fix-other-text')"> Other:
+    <input type="text" class="other-inline" id="fix-other-text" disabled style="display:none;"></label>`;
+  container.innerHTML = html;
+}
+renderFieldCheckboxes();
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+  document.getElementById('panel-overall').style.display = tab === 'overall' ? 'block' : 'none';
+  document.getElementById('panel-testcase').style.display = tab === 'testcase' ? 'block' : 'none';
+}
+
+function toggleOther(cbId, textId) {
+  const cb = document.getElementById(cbId);
+  const text = document.getElementById(textId);
+  text.style.display = cb.checked ? 'inline-block' : 'none';
+  text.disabled = !cb.checked;
+}
+
+function toggleConditional(radioName, condId, hideOnValue) {
+  const checked = document.querySelector(`input[name="${radioName}"]:checked`);
+  const cond = document.getElementById(condId);
+  if (checked && checked.value !== hideOnValue) {
+    cond.classList.add('show');
+  } else {
+    cond.classList.remove('show');
+  }
+}
+
+function getCheckedValues(form, name) {
+  return Array.from(form.querySelectorAll(`input[name="${name}"]:checked`)).map(el => el.value);
+}
+
+async function submitToSheet(payload, statusEl) {
+  statusEl.textContent = 'Submitting…';
+  statusEl.className = 'status';
+  try {
+    await fetch(SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify(payload)
+    });
+    // no-cors 模式下无法读取响应内容，这里假定提交成功
+    statusEl.textContent = 'Submitted — thank you!';
+    statusEl.className = 'status ok';
+  } catch (err) {
+    statusEl.textContent = 'Something went wrong. Please try again.';
+    statusEl.className = 'status err';
+  }
+}
+
+document.getElementById('form-overall').addEventListener('submit', function (e) {
+  e.preventDefault();
+  const f = e.target;
+  const payload = {
+    formType: 'overall',
+    testerName: f.testerName.value,
+    satisfaction: f.satisfaction.value,
+    overallFeedback: f.overallFeedback.value,
+    painPoints: f.painPoints.value,
+    suggestions: f.suggestions.value
+  };
+  submitToSheet(payload, document.getElementById('status-overall'));
+});
+
+document.getElementById('form-testcase').addEventListener('submit', function (e) {
+  e.preventDefault();
+  const f = e.target;
+
+  let sourceMaterials = getCheckedValues(f, 'sourceMaterials');
+  const srcOtherCb = document.getElementById('src-other-cb');
+  if (srcOtherCb.checked && document.getElementById('src-other-text').value.trim()) {
+    sourceMaterials.push('Other: ' + document.getElementById('src-other-text').value.trim());
+  }
+
+  let fieldsRequiringCorrection = getCheckedValues(f, 'fieldsRequiringCorrection');
+  const fixOtherCb = document.getElementById('fix-other-cb');
+  if (fixOtherCb.checked && document.getElementById('fix-other-text').value.trim()) {
+    fieldsRequiringCorrection.push('Other: ' + document.getElementById('fix-other-text').value.trim());
+  }
+
+  const payload = {
+    formType: 'testcase',
+    testCaseId: f.testCaseId.value,
+    docNumber: f.docNumber.value,
+    reviewerName: f.reviewerName.value,
+    sourceMaterials: sourceMaterials,
+    usableAsStart: f.usableAsStart.value,
+    fieldsCorrectedCount: f.fieldsCorrectedCount.value,
+    reviewTime: f.reviewTime.value,
+    fieldsRequiringCorrection: fieldsRequiringCorrection,
+    issueField: f.issueField.value,
+    issueGenerated: f.issueGenerated.value,
+    issueCorrect: f.issueCorrect.value,
+    issueSource: f.issueSource.value,
+    issueExplanation: f.issueExplanation.value,
+    missedWarning: f.missedWarning.value,
+    missedWarningDesc: f.missedWarningDesc.value,
+    overallResult: f.overallResult.value,
+    mostImportantImprovement: f.mostImportantImprovement.value
+  };
+  submitToSheet(payload, document.getElementById('status-testcase'));
+});
+</script>
+</body>
+</html>
